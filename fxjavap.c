@@ -1,12 +1,31 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+#include "class_file.h"
+#include "print_class.h"
+
+void print_usage();
 
 int main(int argc, char *argv[]) {
-    unsigned int magic;
+    FILE *class_file;
+    Class *class;
 
-    class_file_path = "/Users/star_fx/Downloads/HelloWorld.java";
-    FILE class_file = fopen(class_file_path, "rb");
+    if (argc != 2) {
+        print_usage();
+        return EXIT_FAILURE;
+    }
+    
+    class_file = fopen(argv[1], "rb");
+    if (class_file == NULL) {
+        fprintf(stderr, "Error: can not open file.\n");
+        return EXIT_FAILURE;
+    }
 
-    fscanf(class_file, "%1d", &magic);
-    printf("magic: %#x\n", magic);
+    class = parse_class(class_file);
 
+    print_class(class);
+}
+
+void print_usage() {
+    printf("Usage: fxjavap <class-file-path>\n");
 }
