@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    class = parse_class(class_file);
+    class = read_class(class_file);
 
     print_class(class);
 }

@@ -4,18 +4,18 @@
 
 void print_class(Class *class) {
     int i;
-    struct cp_info *current;
+    struct cp_info *constant_pool;
 
     printf("magic: %#X\n", class->magic);
     printf("minor_version: %hu\n", class->minor_version);
     printf("major_version: %hu\n", class->major_version);
     printf("constant_pool_count: %hu\n", class->constant_pool_count);
 
-    current = class->constant_pool->next;
+    constant_pool = class->constant_pool;
     
     for (i = 1; i < class->constant_pool_count; i++) {
-        printf("  #%d tag = %d type = ", i, current->tag);
-        switch (current->tag) {
+        printf("  #%d tag = %d type = ", i, constant_pool[i].tag);
+        switch (constant_pool[i].tag) {
             case CONSTANT_Class: printf("CONSTANT_Class\n"); break;
             case CONSTANT_Fieldref: printf("CONSTANT_Fieldref\n"); break;
             case CONSTANT_Methodref: printf("CONSTANT_Methodref\n"); break;
@@ -31,10 +31,16 @@ void print_class(Class *class) {
             case CONSTANT_MethodType: printf("CONSTANT_MethodType"); break;
             case CONSTANT_InvokeDynamic: printf("CONSTANT_InvokeDynamic\n"); break;
         }
-        current = current->next;
     }
 
     printf("access_flags: %#X\n", class->access_flags);
     printf("this_class: %hu\n", class->this_class);
     printf("super_class: %hu\n", class->super_class);
+    printf("interfaces_count: %hu\n", class->interfaces_count);
+
+    for (i = 0; i < class->interfaces_count; i++) {
+        printf("interface #%d value = %hu\n", i, *(class->interfaces++));
+    }
+
+    printf("fields_count: %hu\n", class->fields_count);
 }

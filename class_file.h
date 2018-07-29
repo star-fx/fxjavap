@@ -104,7 +104,6 @@ struct cp_info {
         struct CONSTANT_MethodType_info *constant_methodtype_info; /* tag: 16 */
         struct CONSTANT_InvokeDynamic_info *constant_invokedynamic_info; /* tag: 18 */
     } info;
-    struct cp_info *next;
 };
 
 /* class file */
@@ -117,9 +116,12 @@ typedef struct Class {
     unsigned short access_flags;
     unsigned short this_class;
     unsigned short super_class;
+    unsigned short interfaces_count;
+    unsigned short *interfaces;
+    unsigned short fields_count;
 } Class;
 
 /* parse class file */
-Class *parse_class(FILE *class_file);
+Class *read_class(FILE *class_file);
 
 #endif
