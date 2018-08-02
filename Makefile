@@ -1,11 +1,15 @@
-fxjavap : class_file.o print_class.o
-	gcc -o fxjavap src/fxjavap.c class_file.o print_class.o
+CC = gcc
+VPATH = src
 
-class_file.o : src/class_file.c
-	gcc -c src/class_file.c
+objects = fxjavap.o class_file.o print_class.o
 
-print_class.o : src/print_class.c
-	gcc -c src/print_class.c
+fxjavap : $(objects)
+	$(CC) $(objects) -o fxjavap
 
+$(objects): %.o : %.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+.PHONY : clean
 clean :
-	rm fxjavap class_file.o print_class.o
+	-rm fxjavap $(objects)
+
