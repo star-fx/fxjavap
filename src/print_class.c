@@ -81,11 +81,11 @@ static char *parse_string_info(struct cp_info *constant_pool, unsigned short ind
 }
 
 static int parse_integer_info(struct cp_info *constant_pool, unsigned short index) {
-    return constant_pool[index].info.integer_info->bytes;
+    return *(int *)(&constant_pool[index].info.integer_info->bytes);
 }
 
 static float parse_float_info(struct cp_info *constant_pool, unsigned short index) {
-    return constant_pool[index].info.float_info->bytes;
+    return *(float *)(&constant_pool[index].info.float_info->bytes);
 }
 
 static long parse_long_info(struct cp_info *constant_pool, unsigned short index) {

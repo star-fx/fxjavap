@@ -3,6 +3,11 @@
 
 #include <stdio.h>
 
+/* basic typedef */
+typedef unsigned char u1;
+typedef unsigned short u2;
+typedef unsigned int u4;
+
 /* constant pool tag type */
 #define CONSTANT_Class                 7
 #define CONSTANT_Fieldref              9
@@ -21,73 +26,73 @@
 
 /* constant pool type */
 struct CONSTANT_Class_info { /* tag: 7 */
-    unsigned short name_index;
+    u2 name_index;
 }; 
 
 struct CONSTANT_Fieldref_info { /* tag: 9 */
-    unsigned short class_index;
-    unsigned short name_and_type_index;
+    u2 class_index;
+    u2 name_and_type_index;
 };
 
 struct CONSTANT_Methodref_info { /* tag: 10 */
-    unsigned short class_index;
-    unsigned name_and_type_index;
+    u2 class_index;
+    u2 name_and_type_index;
 };
 
 struct CONSTANT_InterfaceMethodref_info { /* tag: 11 */
-    unsigned short class_index;
-    unsigned name_and_type_index;
+    u2 class_index;
+    u2 name_and_type_index;
 };
 
 struct CONSTANT_String_info { /* tag: 8 */
-    unsigned short string_index;
+    u2 string_index;
 };
 
 struct CONSTANT_Integer_info { /* tag: 3 */
-    int bytes;
+    u4 bytes;
 };
 
 struct CONSTANT_Float_info { /* tag: 4 */
-    float bytes;
+    u4 bytes;
 };
 
 struct CONSTANT_Long_info { /* tag: 5 */
-    unsigned int high_bytes;
-    unsigned int low_bytes;
+    u4 high_bytes;
+    u4 low_bytes;
 };
 
 struct CONSTANT_Double_info { /* tag: 6 */
-    unsigned int high_bytes;
-    unsigned int low_bytes;
+    u2 high_bytes;
+    u2 low_bytes;
 };
 
 struct CONSTANT_NameAndType_info { /* tag: 12 */
-    unsigned short name_index;
-    unsigned descriptor_index;
+    u2 name_index;
+    u2 descriptor_index;
 };
 
 struct CONSTANT_Utf8_info { /* tag: 1 */
-    unsigned short length;
+    u2 length;
     char *bytes;
 };
 
 struct CONSTANT_Methodhandle_info { /* tag: 15 */
-    unsigned char reference_kind;
-    unsigned short reference_index;
+    u1 reference_kind;
+    u2 reference_index;
 };
 
 struct CONSTANT_MethodType_info { /* tag: 16 */
-    unsigned short descriptor_index;
+    u2 descriptor_index;
 };
 
 struct CONSTANT_InvokeDynamic_info { /* tag: 18 */
-    unsigned short bootstrap_method_attr_index;
-    unsigned short name_and_type_index;
+    u2 bootstrap_method_attr_index;
+    u2 name_and_type_index;
 };
 
 /* constant pool */
 struct cp_info {
-    unsigned char tag;
+    u1 tag;
     union {
         struct CONSTANT_Class_info *class_info; /* tag: 7 */
         struct CONSTANT_Fieldref_info *fieldref_info; /* tag: 9 */
@@ -108,17 +113,17 @@ struct cp_info {
 
 /* class file */
 typedef struct Class {
-    unsigned int magic;
-    unsigned short minor_version;
-    unsigned short major_version;
-    unsigned short constant_pool_count;
+    u4 magic;
+    u2 minor_version;
+    u2 major_version;
+    u2 constant_pool_count;
     struct cp_info *constant_pool;
-    unsigned short access_flags;
-    unsigned short this_class;
-    unsigned short super_class;
-    unsigned short interfaces_count;
-    unsigned short *interfaces;
-    unsigned short fields_count;
+    u2 access_flags;
+    u2 this_class;
+    u2 super_class;
+    u2 interfaces_count;
+    u2 *interfaces;
+    u2 fields_count;
 } Class;
 
 /* parse class file */

@@ -12,50 +12,42 @@ static void check_malloc_result(void *pointer) {
 }
 
 /* read u1 */
-static unsigned char read_u1(FILE *class_file) {
-    unsigned char u1;
-    fread(&u1, sizeof(char), 1, class_file); 
-    return u1;
+static u1 read_u1(FILE *class_file) {
+    u1 _u1;
+    fread(&_u1, sizeof(char), 1, class_file);
+    return _u1;
 }
 
 /* read u2*/
-static unsigned short read_u2(FILE *class_file) {
-    unsigned short u2;
-    unsigned char c2[2];
+static u2 read_u2(FILE *class_file) {
+    u2 _u2;
+    char c2[2];
 
     fread(c2, sizeof(char), 2, class_file);
 
-    u2 = (unsigned short) c2[0] << 8;
-    u2 |= (unsigned short) c2[1];
+    _u2 = (u2) c2[0] << 8;
+    _u2 |= (u2) c2[1];
 
-    return u2;
+    return _u2;
 }
 
 /* read u4 */
-static unsigned int read_u4(FILE *class_file) {
-    unsigned int u4;
-    unsigned char c4[4];
+static u4 read_u4(FILE *class_file) {
+    u4 _u4;
+    char c4[4];
 
     fread(c4, sizeof(char), 4, class_file);
 
-    u4 = (unsigned int) c4[0] << 24;
-    u4 |= (unsigned int) c4[1] << 16;
-    u4 |= (unsigned int) c4[2] << 8;
-    u4 |= (unsigned int) c4[3];
+    _u4 = (u4) c4[0] << 24;
+    _u4 |= (u4) c4[1] << 16;
+    _u4 |= (u4) c4[2] << 8;
+    _u4 |= (u4) c4[3];
 
-    return u4;
-}
-
-static int u4_to_int(unsigned int u4) {
-    return *(int *)(&u4);
-}
-
-static float u4_to_float(unsigned int u4) {
-    return *(float *)(&u4);
+    return _u4;
 }
 
 /* read string */
-static char *read_string(FILE *class_file, unsigned short length) {
+static char *read_string(FILE *class_file, u2 length) {
     char *string = malloc(sizeof(char) * (length + 1));
     check_malloc_result(string);
     fread(string, sizeof(char), length, class_file);
@@ -65,10 +57,10 @@ static char *read_string(FILE *class_file, unsigned short length) {
 }
 
 /* read constant pool info */
-static struct cp_info *read_constant_pool(FILE *class_file, unsigned short constant_pool_count) {
+static struct cp_info *read_constant_pool(FILE *class_file, u2 constant_pool_count) {
     struct cp_info *constant_pool;
     int i;
-    unsigned char tag;
+    u1 tag;
 
     constant_pool = malloc(sizeof(struct cp_info) * constant_pool_count);
     check_malloc_result(constant_pool);
@@ -105,11 +97,11 @@ static struct cp_info *read_constant_pool(FILE *class_file, unsigned short const
                 break;
             case CONSTANT_Integer:
                 constant_pool[i].info.integer_info = malloc(sizeof(struct CONSTANT_Integer_info));
-                constant_pool[i].info.integer_info->bytes = u4_to_int(read_u4(class_file));
+                constant_pool[i].info.integer_info->bytes = read_u4(class_file);
                 break;
             case CONSTANT_Float:
                 constant_pool[i].info.float_info = malloc(sizeof(struct CONSTANT_Float_info));
-                constant_pool[i].info.float_info->bytes = u4_to_float(read_u4(class_file));
+                constant_pool[i].info.float_info->bytes = read_u4(class_file);
                 break;
             case CONSTANT_Long:
                 constant_pool[i].info.long_info = malloc(sizeof(struct CONSTANT_Long_info));
@@ -156,9 +148,9 @@ static struct cp_info *read_constant_pool(FILE *class_file, unsigned short const
     return constant_pool;
 }
 
-static unsigned short *read_interfaces(FILE *class_file, int interfaces_count) {
+static u2 *read_interfaces(FILE *class_file, u2 interfaces_count) {
     int i;
-    unsigned short *interfaces = malloc(sizeof(unsigned short) * interfaces_count);
+    u2 *interfaces = malloc(sizeof(u2) * interfaces_count);
     check_malloc_result(interfaces);
 
     for (i = 0; i < interfaces_count; i++) {
