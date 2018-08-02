@@ -44,11 +44,11 @@ struct CONSTANT_String_info { /* tag: 8 */
 };
 
 struct CONSTANT_Integer_info { /* tag: 3 */
-    unsigned int bytes;
+    int bytes;
 };
 
 struct CONSTANT_Float_info { /* tag: 4 */
-    unsigned int bytes;
+    float bytes;
 };
 
 struct CONSTANT_Long_info { /* tag: 5 */
@@ -68,7 +68,7 @@ struct CONSTANT_NameAndType_info { /* tag: 12 */
 
 struct CONSTANT_Utf8_info { /* tag: 1 */
     unsigned short length;
-    unsigned char *bytes;
+    char *bytes;
 };
 
 struct CONSTANT_Methodhandle_info { /* tag: 15 */
@@ -89,20 +89,20 @@ struct CONSTANT_InvokeDynamic_info { /* tag: 18 */
 struct cp_info {
     unsigned char tag;
     union {
-        struct CONSTANT_Class_info *constant_class_info; /* tag: 7 */
-        struct CONSTANT_Fieldref_info *constant_fieldref_info; /* tag: 9 */
-        struct CONSTANT_Methodref_info *constant_methodref_info; /* tag: 10 */
-        struct CONSTANT_InterfaceMethodref_info *constant_interfacemethodref_info; /* tag: 11 */
-        struct CONSTANT_String_info *constant_string_info; /* tag: 8 */
-        struct CONSTANT_Integer_info *constant_integer_info; /* tag: 3 */
-        struct CONSTANT_Float_info *constant_float_info; /* tag: 4 */
-        struct CONSTANT_Long_info *constant_long_info; /* tag: 5 */
-        struct CONSTANT_Double_info *constant_double_info; /* tag:6 */
-        struct CONSTANT_NameAndType_info *constant_nameandtype_info; /* tag: 12 */
-        struct CONSTANT_Utf8_info *constant_utf8_info; /* tag: 1 */
-        struct CONSTANT_Methodhandle_info *constant_methodhandle_info; /* tag: 15 */
-        struct CONSTANT_MethodType_info *constant_methodtype_info; /* tag: 16 */
-        struct CONSTANT_InvokeDynamic_info *constant_invokedynamic_info; /* tag: 18 */
+        struct CONSTANT_Class_info *class_info; /* tag: 7 */
+        struct CONSTANT_Fieldref_info *fieldref_info; /* tag: 9 */
+        struct CONSTANT_Methodref_info *methodref_info; /* tag: 10 */
+        struct CONSTANT_InterfaceMethodref_info *interfacemethodref_info; /* tag: 11 */
+        struct CONSTANT_String_info *string_info; /* tag: 8 */
+        struct CONSTANT_Integer_info *integer_info; /* tag: 3 */
+        struct CONSTANT_Float_info *float_info; /* tag: 4 */
+        struct CONSTANT_Long_info *long_info; /* tag: 5 */
+        struct CONSTANT_Double_info *double_info; /* tag:6 */
+        struct CONSTANT_NameAndType_info *nameandtype_info; /* tag: 12 */
+        struct CONSTANT_Utf8_info *utf8_info; /* tag: 1 */
+        struct CONSTANT_Methodhandle_info *methodhandle_info; /* tag: 15 */
+        struct CONSTANT_MethodType_info *methodtype_info; /* tag: 16 */
+        struct CONSTANT_InvokeDynamic_info *invokedynamic_info; /* tag: 18 */
     } info;
 };
 

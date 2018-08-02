@@ -46,11 +46,20 @@ static unsigned int read_u4(FILE *class_file) {
     return u4;
 }
 
+static int u4_to_int(unsigned int u4) {
+    return *(int *)(&u4);
+}
+
+static float u4_to_float(unsigned int u4) {
+    return *(float *)(&u4);
+}
+
 /* read string */
-static unsigned char *read_string(FILE *class_file, unsigned short length) {
-    unsigned char *string = malloc(sizeof(char) * (length + 1));
+static char *read_string(FILE *class_file, unsigned short length) {
+    char *string = malloc(sizeof(char) * (length + 1));
     check_malloc_result(string);
     fread(string, sizeof(char), length, class_file);
+    *(string + length) = '\0';
 
     return string;
 }
@@ -70,79 +79,76 @@ static struct cp_info *read_constant_pool(FILE *class_file, unsigned short const
 
         switch (tag) { 
             case CONSTANT_Class:
-                constant_pool[i].info.constant_class_info = malloc(sizeof(struct CONSTANT_Class_info));
-                check_malloc_result(constant_pool[i].info.constant_class_info);
-                constant_pool[i].info.constant_class_info->name_index = read_u2(class_file);
+                constant_pool[i].info.class_info = malloc(sizeof(struct CONSTANT_Class_info));
+                check_malloc_result(constant_pool[i].info.class_info);
+                constant_pool[i].info.class_info->name_index = read_u2(class_file);
                 break;
             case CONSTANT_Fieldref:
-                constant_pool[i].info.constant_fieldref_info = malloc(sizeof(struct CONSTANT_Fieldref_info));
-                constant_pool[i].info.constant_fieldref_info->class_index = read_u2(class_file);
-                constant_pool[i].info.constant_fieldref_info->name_and_type_index = read_u2(class_file);
+                constant_pool[i].info.fieldref_info = malloc(sizeof(struct CONSTANT_Fieldref_info));
+                constant_pool[i].info.fieldref_info->class_index = read_u2(class_file);
+                constant_pool[i].info.fieldref_info->name_and_type_index = read_u2(class_file);
                 break;
             case CONSTANT_Methodref:
-                constant_pool[i].info.constant_methodref_info = malloc(sizeof(struct CONSTANT_Methodref_info));
-                constant_pool[i].info.constant_methodref_info->class_index = read_u2(class_file);
-                constant_pool[i].info.constant_methodref_info->name_and_type_index = read_u2(class_file);
+                constant_pool[i].info.methodref_info = malloc(sizeof(struct CONSTANT_Methodref_info));
+                constant_pool[i].info.methodref_info->class_index = read_u2(class_file);
+                constant_pool[i].info.methodref_info->name_and_type_index = read_u2(class_file);
                 break;
             case CONSTANT_InterfaceMethodref:
                 /* TODO: make test */
-                constant_pool[i].info.constant_interfacemethodref_info = malloc(sizeof(struct CONSTANT_InterfaceMethodref_info));
-                constant_pool[i].info.constant_interfacemethodref_info->class_index = read_u2(class_file);
-                constant_pool[i].info.constant_interfacemethodref_info->name_and_type_index = read_u2(class_file);
+                constant_pool[i].info.interfacemethodref_info = malloc(sizeof(struct CONSTANT_InterfaceMethodref_info));
+                constant_pool[i].info.interfacemethodref_info->class_index = read_u2(class_file);
+                constant_pool[i].info.interfacemethodref_info->name_and_type_index = read_u2(class_file);
                 break;
             case CONSTANT_String:
-                constant_pool[i].info.constant_string_info = malloc(sizeof(struct CONSTANT_String_info));
-                constant_pool[i].info.constant_string_info->string_index = read_u2(class_file);
+                constant_pool[i].info.string_info = malloc(sizeof(struct CONSTANT_String_info));
+                constant_pool[i].info.string_info->string_index = read_u2(class_file);
                 break;
             case CONSTANT_Integer:
-                constant_pool[i].info.constant_integer_info = malloc(sizeof(struct CONSTANT_Integer_info));
-                constant_pool[i].info.constant_integer_info->bytes = read_u4(class_file);
+                constant_pool[i].info.integer_info = malloc(sizeof(struct CONSTANT_Integer_info));
+                constant_pool[i].info.integer_info->bytes = u4_to_int(read_u4(class_file));
                 break;
             case CONSTANT_Float:
-                /* TODO: make test */
-                constant_pool[i].info.constant_float_info = malloc(sizeof(struct CONSTANT_Float_info));
-                constant_pool[i].info.constant_float_info->bytes = read_u4(class_file);
+                constant_pool[i].info.float_info = malloc(sizeof(struct CONSTANT_Float_info));
+                constant_pool[i].info.float_info->bytes = u4_to_float(read_u4(class_file));
                 break;
             case CONSTANT_Long:
-                /* TODO: make test */
-                constant_pool[i].info.constant_long_info = malloc(sizeof(struct CONSTANT_Long_info));
-                constant_pool[i].info.constant_long_info->high_bytes = read_u4(class_file);
-                constant_pool[i].info.constant_long_info->low_bytes = read_u4(class_file);
+                constant_pool[i].info.long_info = malloc(sizeof(struct CONSTANT_Long_info));
+                constant_pool[i].info.long_info->high_bytes = read_u4(class_file);
+                constant_pool[i].info.long_info->low_bytes = read_u4(class_file);
                 i++; /* long type require two space */
                 break;
             case CONSTANT_Double:
-                /* TODO: make test */
-                constant_pool[i].info.constant_double_info = malloc(sizeof(struct CONSTANT_Double_info));
-                constant_pool[i].info.constant_double_info->high_bytes = read_u4(class_file);
-                constant_pool[i].info.constant_double_info->low_bytes = read_u4(class_file);
+                constant_pool[i].info.double_info = malloc(sizeof(struct CONSTANT_Double_info));
+                constant_pool[i].info.double_info->high_bytes = read_u4(class_file);
+                constant_pool[i].info.double_info->low_bytes = read_u4(class_file);
                 i++; /* double type require two space */
                 break;
             case CONSTANT_NameAndType:
-                constant_pool[i].info.constant_nameandtype_info = malloc(sizeof(struct CONSTANT_NameAndType_info));
-                constant_pool[i].info.constant_nameandtype_info->name_index = read_u2(class_file);
-                constant_pool[i].info.constant_nameandtype_info->descriptor_index = read_u2(class_file);
+                constant_pool[i].info.nameandtype_info = malloc(sizeof(struct CONSTANT_NameAndType_info));
+                constant_pool[i].info.nameandtype_info->name_index = read_u2(class_file);
+                constant_pool[i].info.nameandtype_info->descriptor_index = read_u2(class_file);
                 break;
             case CONSTANT_Utf8:
-                constant_pool[i].info.constant_utf8_info = malloc(sizeof(struct CONSTANT_Utf8_info));
-                constant_pool[i].info.constant_utf8_info->length = read_u2(class_file);
-                constant_pool[i].info.constant_utf8_info->bytes = read_string(class_file, constant_pool[i].info.constant_utf8_info->length);
+                constant_pool[i].info.utf8_info = malloc(sizeof(struct CONSTANT_Utf8_info));
+                constant_pool[i].info.utf8_info->length = read_u2(class_file);
+                constant_pool[i].info.utf8_info->bytes = read_string(class_file, constant_pool[i].info.utf8_info->length);
                 break;
             case CONSTANT_MethodHandle:
                 /* TODO: make test */
-                constant_pool[i].info.constant_methodhandle_info = malloc(sizeof(struct CONSTANT_Methodhandle_info));
-                constant_pool[i].info.constant_methodhandle_info->reference_kind = read_u1(class_file);
-                constant_pool[i].info.constant_methodhandle_info->reference_index = read_u2(class_file);
+                constant_pool[i].info.methodhandle_info = malloc(sizeof(struct CONSTANT_Methodhandle_info));
+                constant_pool[i].info.methodhandle_info->reference_kind = read_u1(class_file);
+                constant_pool[i].info.methodhandle_info->reference_index = read_u2(class_file);
                 break;
             case CONSTANT_MethodType:
                 /* TODO: make test */
-                constant_pool[i].info.constant_methodtype_info = malloc(sizeof(struct CONSTANT_MethodType_info));
-                constant_pool[i].info.constant_methodtype_info->descriptor_index = read_u2(class_file);
+                constant_pool[i].info.methodtype_info = malloc(sizeof(struct CONSTANT_MethodType_info));
+                constant_pool[i].info.methodtype_info->descriptor_index = read_u2(class_file);
                 break;
             case CONSTANT_InvokeDynamic:
                 /* TODO: make test */
-                constant_pool[i].info.constant_invokedynamic_info = malloc(sizeof(struct CONSTANT_InvokeDynamic_info));
-                constant_pool[i].info.constant_invokedynamic_info->bootstrap_method_attr_index = read_u2(class_file);
-                constant_pool[i].info.constant_invokedynamic_info->name_and_type_index = read_u2(class_file);
+                constant_pool[i].info.invokedynamic_info = malloc(sizeof(struct CONSTANT_InvokeDynamic_info));
+                constant_pool[i].info.invokedynamic_info->bootstrap_method_attr_index = read_u2(class_file);
+                constant_pool[i].info.invokedynamic_info->name_and_type_index = read_u2(class_file);
                 break;
         }
     }
