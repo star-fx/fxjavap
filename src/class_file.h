@@ -62,8 +62,8 @@ struct CONSTANT_Long_info { /* tag: 5 */
 };
 
 struct CONSTANT_Double_info { /* tag: 6 */
-    u2 high_bytes;
-    u2 low_bytes;
+    u4 high_bytes;
+    u4 low_bytes;
 };
 
 struct CONSTANT_NameAndType_info { /* tag: 12 */

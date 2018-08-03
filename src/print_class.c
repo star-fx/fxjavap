@@ -95,7 +95,7 @@ static long parse_long_info(struct cp_info *constant_pool, unsigned short index)
 
 static double parse_double_info(struct cp_info *constant_pool, unsigned short index) {
     struct CONSTANT_Double_info *double_info = constant_pool[index].info.double_info;
-    unsigned long l = (long) double_info->high_bytes << 32 | double_info->low_bytes;
+    unsigned long l = (unsigned long) double_info->high_bytes << 32 | double_info->low_bytes;
     return *(double *)(&l);
 }
 

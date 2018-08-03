@@ -14,16 +14,16 @@ static void check_malloc_result(void *pointer) {
 /* read u1 */
 static u1 read_u1(FILE *class_file) {
     u1 _u1;
-    fread(&_u1, sizeof(char), 1, class_file);
+    fread(&_u1, sizeof(u1), 1, class_file);
     return _u1;
 }
 
 /* read u2*/
 static u2 read_u2(FILE *class_file) {
     u2 _u2;
-    char c2[2];
+    u1 c2[2];
 
-    fread(c2, sizeof(char), 2, class_file);
+    fread(c2, sizeof(u1), 2, class_file);
 
     _u2 = (u2) c2[0] << 8;
     _u2 |= (u2) c2[1];
@@ -34,9 +34,9 @@ static u2 read_u2(FILE *class_file) {
 /* read u4 */
 static u4 read_u4(FILE *class_file) {
     u4 _u4;
-    char c4[4];
+    u1 c4[4];
 
-    fread(c4, sizeof(char), 4, class_file);
+    fread(c4, sizeof(u1), 4, class_file);
 
     _u4 = (u4) c4[0] << 24;
     _u4 |= (u4) c4[1] << 16;
