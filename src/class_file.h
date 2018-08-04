@@ -111,6 +111,46 @@ struct cp_info {
     } info;
 };
 
+/* access flags */
+#define ACC_PUBLIC     0x0001
+#define ACC_FINAL      0x0010
+#define ACC_SUPER      0x0020
+#define ACC_INTERFACE  0x0200
+#define ACC_ABSTRACT   0x0400
+#define ACC_SYNTHETIC  0x1000
+#define ACC_ANNOTATION 0x2000
+#define ACC_ENUM       0x4000
+
+struct ConstantValue {
+    u2 constant_value_index;
+};
+
+struct SourceFile_attribute {
+    u2 sourcefile_index;
+};
+
+struct attribute_info {
+    u2 attribute_name_index;
+    u4 attribute_length;
+    u1 *info;
+};
+
+struct field_info {
+    u2 access_flags;
+    u2 name_index;
+    u2 descriptor_index;
+    u2 attributes_count;
+    struct attribute_info *attributes;;
+};
+
+struct method_info {
+    u2 access_flags;
+    u2 name_index;
+    u2 descriptor_index;
+    u2 attributes_count;
+    struct attribute_info *attributes;;
+};
+
 /* class file */
 typedef struct Class {
     u4 magic;
@@ -124,6 +164,11 @@ typedef struct Class {
     u2 interfaces_count;
     u2 *interfaces;
     u2 fields_count;
+    struct field_info *fields;
+    u2 methods_count;
+    struct method_info *methods;
+    u2 attributes_count;
+    struct attribute_info *attributes;
 } Class;
 
 /* parse class file */

@@ -56,6 +56,13 @@ static char *read_string(FILE *class_file, u2 length) {
     return string;
 }
 
+static u1 *read_bytes(FILE *class_file, u4 length) {
+    u1 *bytes = malloc(sizeof(u1) * length);
+    check_malloc_result(bytes);
+    fread(bytes, sizeof(char), length, class_file);
+    return bytes;
+}
+
 /* read constant pool info */
 static struct cp_info *read_constant_pool(FILE *class_file, u2 constant_pool_count) {
     struct cp_info *constant_pool;
@@ -160,6 +167,59 @@ static u2 *read_interfaces(FILE *class_file, u2 interfaces_count) {
     return interfaces;
 }
 
+static struct attribute_info *read_attributes(FILE *class_file, u2 attributes_count, struct cp_info *constant_pool) {
+    struct attribute_info *attributes;
+    struct CONSTANT_Utf8_info *utf8;
+    int i;
+
+    attributes = malloc(sizeof(struct attribute_info) * attributes_count);
+    check_malloc_result(attributes);
+
+    for (i = 0; i < attributes_count; i++) {
+        attributes[i].attribute_name_index = read_u2(class_file);
+        attributes[i].attribute_length = read_u4(class_file);
+        attributes[i].info = read_bytes(class_file, attributes[i].attribute_length);
+    }
+
+    return attributes;
+}
+
+static struct field_info *read_fields(FILE *class_file, u2 fields_count, struct cp_info *constant_pool) {
+    struct field_info *fields;
+    int i;
+
+    fields = malloc(sizeof(struct field_info) * fields_count);
+    check_malloc_result(fields);
+
+    for (i = 0; i < fields_count; i++) {
+        fields[i].access_flags = read_u2(class_file);
+        fields[i].name_index = read_u2(class_file);
+        fields[i].descriptor_index = read_u2(class_file);
+        fields[i].attributes_count = read_u2(class_file);
+        fields[i].attributes = read_attributes(class_file, fields[i].attributes_count, constant_pool);
+    }
+
+    return fields;
+}
+
+static struct method_info *read_methods(FILE *class_file, u2 methods_count, struct cp_info *constant_pool) {
+    struct method_info *methods;
+    int i;
+
+    methods = malloc(sizeof(struct method_info) * methods_count);
+    check_malloc_result(methods);
+
+    for (i = 0; i < methods_count; i++) {
+        methods[i].access_flags = read_u2(class_file);
+        methods[i].name_index = read_u2(class_file);
+        methods[i].descriptor_index = read_u2(class_file);
+        methods[i].attributes_count = read_u2(class_file);
+        methods[i].attributes = read_attributes(class_file, methods[i].attributes_count, constant_pool);
+    }
+
+    return methods;
+}
+
 Class *read_class(FILE *class_file) {
     Class *class = malloc(sizeof(Class));
     check_malloc_result(class);
@@ -175,6 +235,11 @@ Class *read_class(FILE *class_file) {
     class->interfaces_count = read_u2(class_file);
     class->interfaces = read_interfaces(class_file, class->interfaces_count);
     class->fields_count = read_u2(class_file);
+    class->fields = read_fields(class_file, class->fields_count, class->constant_pool);
+    class->methods_count = read_u2(class_file);
+    class->methods = read_methods(class_file, class->methods_count, class->constant_pool);
+    class->attributes_count = read_u2(class_file);
+    class->attributes = read_attributes(class_file, class->attributes_count, class->constant_pool);
 
     return class;
 }
