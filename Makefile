@@ -1,4 +1,5 @@
 CC = gcc
+CFLAGS = -Wall -std=c89
 VPATH = src
 
 objects = fxjavap.o class_file.o print_class.o
